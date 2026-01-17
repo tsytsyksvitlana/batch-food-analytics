@@ -85,10 +85,10 @@ A batch processing Spark application that processes data end-to-end from raw inp
 ### Implementation Steps
 1. Execute Spark in batch mode (non-streaming).
 2. Partition input data for parallel processing.
-3. Filter data based on business conditions (e.g., date ranges).
-4. Join multiple datasets (CSV + JSON).
+3. Filter data based on business conditions (e.g., only quantity > 0).
+4. Join multiple datasets (DB + JSON).
 5. Perform aggregations and transformations.
-6. Write processed results to storage.
+6. Write processed results to storage (Parquet).
 
 ### Acceptance Criteria
 - The application runs as a batch job.

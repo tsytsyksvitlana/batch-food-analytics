@@ -1,26 +1,26 @@
-import os
 import logging
-from pyspark.sql import SparkSession, DataFrame
-from pyspark.sql.utils import AnalysisException
+
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import (
-    StructType,
-    StructField,
+    DoubleType,
     IntegerType,
     StringType,
-    DoubleType
+    StructField,
+    StructType
 )
+from pyspark.sql.utils import AnalysisException
 
-CSV_PATH = "data/raw/pizza_sales.csv"
-JSON_PATH = "data/raw/ingredients.json"
-PARQUET_PATH = "data/processed/pizza_sales.parquet"
-
-POSTGRES_HOST = os.environ.get("POSTGRES_HOST", "localhost")
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT", "5432")
-POSTGRES_DB = os.environ.get("POSTGRES_DB", "pizza_db")
-POSTGRES_USER = os.environ.get("POSTGRES_USER", "pizza_user")
-POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD", "pizza_pass")
-POSTGRES_TABLE = os.environ.get("POSTGRES_TABLE", "pizza_categories")
-
+from spark_jobs.config import (
+    CSV_PATH,
+    JSON_PATH,
+    PARQUET_PATH,
+    POSTGRES_DB,
+    POSTGRES_HOST,
+    POSTGRES_PASSWORD,
+    POSTGRES_PORT,
+    POSTGRES_TABLE,
+    POSTGRES_USER
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -68,7 +68,6 @@ def read_csv(spark: SparkSession, path: str) -> DataFrame | None:
         StructField("order_date", StringType(), True),
         StructField("order_time", StringType(), True),
         StructField("pizza_name", StringType(), True),
-        StructField("category", StringType(), True),
         StructField("quantity", IntegerType(), True),
         StructField("price", DoubleType(), True),
     ])
@@ -140,12 +139,12 @@ def read_parquet(spark: SparkSession, path: str) -> DataFrame | None:
 
 def read_postgres(
     spark: SparkSession,
-    host: str,
-    port: str,
-    db: str,
-    user: str,
-    password: str,
-    table: str
+    host: str = POSTGRES_HOST,
+    port: str = POSTGRES_PORT,
+    db: str = POSTGRES_DB,
+    user: str = POSTGRES_USER,
+    password: str = POSTGRES_PASSWORD,
+    table: str = POSTGRES_TABLE
 ) -> DataFrame | None:
     """
     Read a small PostgreSQL table using JDBC (single-threaded).
@@ -188,7 +187,6 @@ def read_postgres(
         return None
 
 
-
 def main() -> None:
     """
     Main entry point for reading all data sources.
@@ -219,7 +217,7 @@ def main() -> None:
         logger.info("Sample ingredients data")
         ingredients_df.show(5, truncate=False)
 
-    if historical_df is not None:
+    if historical_df is not None and not pizza_sales_df:
         logger.info("Sample historical Parquet data")
         historical_df.show(5, truncate=False)
 

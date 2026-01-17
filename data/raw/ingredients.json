@@ -1,7 +1,6 @@
 [
-    {"pizza_name": "cali_ckn", "ingredients": ["chicken", "cheese", "tomato_sauce", "onion"]},
-    {"pizza_name": "margherita", "ingredients": ["cheese", "tomato_sauce", "basil"]},
-    {"pizza_name": "pepperoni", "ingredients": ["pepperoni", "cheese", "tomato_sauce"]},
-    {"pizza_name": "veggie", "ingredients": ["bell_pepper", "onion", "cheese", "tomato_sauce"]}
-  ]
-  
+  {"pizza_name": "cali_ckn", "ingredients": ["chicken", "cheese", "tomato_sauce", "onion"]},
+  {"pizza_name": "margherita", "ingredients": ["cheese", "tomato_sauce", "basil"]},
+  {"pizza_name": "pepperoni", "ingredients": ["pepperoni", "cheese", "tomato_sauce"]},
+  {"pizza_name": "veggie", "ingredients": ["bell_pepper", "onion", "cheese", "tomato_sauce"]}
+]
