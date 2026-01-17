@@ -1,0 +1,7 @@
+order_id,order_date,order_time,pizza_name,category,quantity,price
+1,2015-01-02,18:27:50,cali_ckn,chicken,2,15.50
+2,2015-01-04,12:15:00,cali_ckn,chicken,1,7.75
+3,2015-01-05,19:00:00,margherita,vegetarian,3,22.50
+4,2015-01-07,20:30:00,pepperoni,meat,2,18.00
+5,2015-01-04,13:45:00,cali_ckn,chicken,1,7.75
+6,2015-01-02,18:30:00,veggie,vegetarian,2,12.00
