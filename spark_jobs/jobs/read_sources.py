@@ -21,38 +21,13 @@ from spark_jobs.config import (
     POSTGRES_TABLE,
     POSTGRES_USER
 )
+from spark_jobs.spark_session import create_spark_session
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 logger = logging.getLogger(__name__)
-
-
-def create_spark_session(
-    app_name: str = "BatchPizzaProject_ReadSources"
-) -> SparkSession:
-    """
-    Create and configure SparkSession.
-
-    :param app_name: Spark application name
-    :return: SparkSession instance
-    """
-    spark = (
-        SparkSession.builder
-        .appName(app_name)
-        .master("local[*]")
-        .config(
-            "spark.jars.packages",
-            "org.postgresql:postgresql:42.7.3"
-        )
-        .getOrCreate()
-    )
-
-    spark.sparkContext.setLogLevel("ERROR")
-    logger.info("SparkSession created successfully")
-
-    return spark
 
 
 def read_csv(spark: SparkSession, path: str) -> DataFrame | None:
@@ -74,7 +49,7 @@ def read_csv(spark: SparkSession, path: str) -> DataFrame | None:
 
     try:
         df = spark.read.option("header", True).schema(schema).csv(path)
-        logger.info("CSV loaded successfully (%d rows)", df.count())
+        logger.info("CSV loaded successfully")
 
         missing_cols = [
             field.name for field in schema.fields
@@ -103,7 +78,7 @@ def read_json(spark: SparkSession, path: str) -> DataFrame | None:
     """
     try:
         df = spark.read.option("multiline", True).json(path)
-        logger.info("JSON loaded successfully (%d rows)", df.count())
+        logger.info("JSON loaded successfully")
 
         if df.rdd.isEmpty():
             logger.warning("JSON file is empty")
@@ -125,7 +100,7 @@ def read_parquet(spark: SparkSession, path: str) -> DataFrame | None:
     """
     try:
         df = spark.read.parquet(path)
-        logger.info("Parquet loaded successfully (%d rows)", df.count())
+        logger.info("Parquet loaded successfully")
 
         if df.rdd.isEmpty():
             logger.warning("Parquet file is empty")
@@ -171,7 +146,7 @@ def read_postgres(
     try:
         df = spark.read.jdbc(url=jdbc_url, table=table, properties=properties)
         logger.info(
-            "PostgreSQL table '%s' loaded successfully (%d rows)",
+            "PostgreSQL table '%s' loaded successfully",
             table,
             df.count()
         )

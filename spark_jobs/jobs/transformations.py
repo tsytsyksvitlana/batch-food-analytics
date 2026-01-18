@@ -12,11 +12,9 @@ from spark_jobs.config import (
     POSTGRES_TABLE,
     POSTGRES_USER
 )
-from spark_jobs.read_sources import (
-    create_spark_session,
-    read_parquet,
-    read_postgres
-)
+from spark_jobs.jobs.read_sources import read_parquet, read_postgres
+from spark_jobs.spark_session import create_spark_session
+from utils.metrics import log_df_metrics
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -75,14 +73,17 @@ def main():
     sales_df = read_parquet(spark, PARQUET_PATH)
     categories_df = read_postgres(spark, POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_TABLE)
 
-    from read_sources import JSON_PATH, read_json
+    from spark_jobs.jobs.read_sources import JSON_PATH, read_json
     ingredients_df = read_json(spark, JSON_PATH)
 
     if sales_df and categories_df and ingredients_df:
         enriched_df = enrich_sales_data(sales_df, categories_df, ingredients_df)
+        log_df_metrics(enriched_df, "enriched_sales")
         enriched_df.show(5, truncate=False)
 
         category_sales, pizza_sales_agg = aggregate_sales(enriched_df)
+        log_df_metrics(category_sales, "category_sales")
+        log_df_metrics(pizza_sales_agg, "pizza_sales")
         category_sales.show()
         pizza_sales_agg.show()
 
