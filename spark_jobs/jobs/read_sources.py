@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import (
@@ -30,7 +31,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def read_csv(spark: SparkSession, path: str) -> DataFrame | None:
+def read_csv(spark: SparkSession, path: str) -> Optional[DataFrame]:
     """
     Read CSV file with an explicit schema and basic validation.
 
@@ -68,7 +69,7 @@ def read_csv(spark: SparkSession, path: str) -> DataFrame | None:
         return None
 
 
-def read_json(spark: SparkSession, path: str) -> DataFrame | None:
+def read_json(spark: SparkSession, path: str) -> Optional[DataFrame]:
     """
     Read JSON file with nested structures.
 
@@ -90,7 +91,7 @@ def read_json(spark: SparkSession, path: str) -> DataFrame | None:
         return None
 
 
-def read_parquet(spark: SparkSession, path: str) -> DataFrame | None:
+def read_parquet(spark: SparkSession, path: str) -> Optional[DataFrame]:
     """
     Read Parquet file containing historical data.
 
@@ -120,7 +121,7 @@ def read_postgres(
     user: str = POSTGRES_USER,
     password: str = POSTGRES_PASSWORD,
     table: str = POSTGRES_TABLE
-) -> DataFrame | None:
+) -> Optional[DataFrame]:
     """
     Read a small PostgreSQL table using JDBC (single-threaded).
 

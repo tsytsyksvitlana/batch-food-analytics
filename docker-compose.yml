@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: pizza_postgres
+    environment:
+      POSTGRES_USER: pizza_user
+      POSTGRES_PASSWORD: pizza_pass
+      POSTGRES_DB: pizza_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init_db:/docker-entrypoint-initdb.d
+    networks:
+      - pizza_net
+
+  spark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spark_batch
+    depends_on:
+      - postgres
+    environment:
+      SPARK_MASTER_URL: "local[*]"
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: pizza_db
+      POSTGRES_USER: pizza_user
+      POSTGRES_PASSWORD: pizza_pass
+    networks:
+      - pizza_net
+    command: tail -f /dev/null
+
+networks:
+  pizza_net:
+    driver: bridge

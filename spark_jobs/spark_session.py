@@ -20,7 +20,7 @@ def create_spark_session(
         .master("local[*]")
         .config(
             "spark.jars.packages",
-            "org.postgresql:postgresql:42.7.3"
+            "org.postgresql:postgresql:42.2.29"
         )
         .getOrCreate()
     )
